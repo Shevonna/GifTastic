@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+    
+</head>
+<body>
+ 
+  <div id="buttons-view"></div>
+
+  <form class="form-inline my-2 my-lg-0" id="gif-form">
+    <input type="text" id="gif-input">
+    <button id="add-gif" type="submit" value="Search!" data-id="#topics">Search</button>
+  </form>
+  <div id="giffy-view"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+   
+    var topics = ["lol", "exasperated", "hyper", "crazy"];
+  
+    $("#add-gif").on("click", function() {
+
+        var gifs = $(this).attr("data-id");
+        console.log(gifs);
+        // var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=r1mctHzf8zEoU0tGSF7B6lUg9luSB2eI&q=" + gifs +"&limit=10&offset=0&rating=G&lang=en";
+        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=r1mctHzf8zEoU0tGSF7B6lUg9luSB2eI&q=+gifs+&limit=10&offset=0&rating=G&lang=en";
+        $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        .then(function(response) {
+          var results = response.data;
+
+          for (var i = 0; i < results.length; i++) {
+            var gifDiv = $("<div>");
+
+            var rating = results[i].rating;
+
+            var p = $("<p>").text("Rating: " + rating);
+
+            var gifImage = $("<img>");
+            gifImage.attr("src", results[i].images.fixed_height.url);
+            
+            gifDiv.prepend(gifImage);
+            gifDiv.prepend(p);
+            
+
+            $("#giffy-view").prepend(gifDiv);
+          }
+        });
+      });
+    function renderButtons() {
+      $("#buttons-view").empty();
+      for (i = 0; i < topics.length; i++) {
+        var buttons = $("<button>" +topics[i]+ "</button>");
+        buttons.attr("data-name", topics[i]);
+        $("#buttons-view").append(buttons)
+      }
+    }
+    $("#add-gif").on("click", function(event) {
+      event.preventDefault();
+      var inputText = $("#gif-input").val();
+      topics.push(inputText);
+      renderButtons();
+    });
+
+    
+
+
+    renderButtons();
+  </script>
+ 
+
+
+
+
+</body>
+</html>
